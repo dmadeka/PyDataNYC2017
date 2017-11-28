@@ -127,8 +127,7 @@ class MLPDashboard(VBox):
         self.update_btn = Button(description='Update')
 
         self.bar_figure = plt.figure()
-        self.bar_plot = plt.bar([], [], scales={'x': OrdinalScale()},
-        colors=['Purple'])
+        self.bar_plot = plt.bar([], [], scales={'x': OrdinalScale()})
 
         self.hist_figure = plt.figure(title='Histogram of Activations')
         self.hist_plot = plt.hist([], bins=20)
