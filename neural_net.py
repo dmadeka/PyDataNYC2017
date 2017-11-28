@@ -4,7 +4,8 @@ from bqplot import *
 from bqplot.marks import Graph
 from ipywidgets import IntSlider, Dropdown, RadioButtons, HBox, VBox, Button, Layout
 from bqplot import pyplot as plt
-from bqplot import OrdinalScale
+from bqplot import OrdinalScale, OrdinalColorScale
+from bqplot.colorschemes import CATEGORY10
 
 from IPython.display import display
 
@@ -44,14 +45,12 @@ class NeuralNet(Figure):
                 i += 1
 
         n = len(self.flattened_layer_nodes)
-        self.link_matrix = np.empty((n,n))
-        self.link_matrix[:] = np.nan
-
+        self.link_data = []
         for i in range(len(self.layer_nodes) - 1):
             curr_layer_nodes_indices = [node_indices[d] for d in self.layer_nodes[i]]
             next_layer_nodes = [node_indices[d] for d in self.layer_nodes[i+1]]
             for s, t in product(curr_layer_nodes_indices, next_layer_nodes):
-                self.link_matrix[s, t] = 1
+                self.link_data.append({'source': s, 'target': t, 'value': 0})
 
         # set node x locations
         self.nodes_x = np.repeat(np.linspace(0, 100,
@@ -73,12 +72,15 @@ class NeuralNet(Figure):
 
         xs = LinearScale(min=0, max=100)
         ys = LinearScale(min=0, max=100)
+        link_color_scale = OrdinalColorScale(colors=['gray'] + CATEGORY10, domain=list(range(11)))
 
         self.graph = Graph(node_data=[{'label': d,
                                        'label_display': 'none'} for d in self.flattened_layer_nodes],
-                           link_matrix=self.link_matrix, link_type='line',
+                           # link_matrix=self.link_matrix, 
+                           link_data=self.link_data,
+                           link_type='line',
                            colors=self.node_colors, directed=self.directed_links,
-                           scales={'x': xs, 'y': ys}, x=self.nodes_x, y=self.nodes_y)
+                           scales={'x': xs, 'y': ys, 'link_color': link_color_scale}, x=self.nodes_x, y=self.nodes_y)
         self.graph.hovered_style = {'stroke': '1.5'}
         self.graph.unhovered_style = {'opacity': '0.1'}
         self.graph.selected_style = {'opacity': '1',
