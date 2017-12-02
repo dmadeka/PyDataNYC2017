@@ -1,5 +1,9 @@
 # PyData NYC 2017
 
+Try it on MyBinder below:
+
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/dmadeka/plot_examples/master)
+
 ### Dependencies
 
 This package depends on the following packages:
